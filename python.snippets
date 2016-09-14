@@ -1,0 +1,57 @@
+snippet proclines "process lines read form file and do the output" b
+${1:filename}=open(${2:input})
+lines=$1.readlines()
+
+for line in lines:
+    #TODO PROCESS LINE
+
+$1.close()
+endsnippet
+
+snippet loopdir "function to loop all files in dir" b
+def loop(root): 
+    for parent,dirs,files in os.walk(root):
+        for d in dirs:
+            ${1:#todo}
+        for f in files:
+			${2:#todo}
+endsnippet
+
+snippet todo "comment todo" b
+#todo
+endsnippet
+
+snippet getin "get string between tow supstrings" b
+def getin(content,start,end):
+    s=content.find(start)
+    e=content.find(end,s+len(start))
+    if s==-1 or e==-1:
+        return ''
+    return content[s+len(start):e]
+endsnippet
+
+snippet getnumin "get digit char in string" b
+def getnumin(content):
+    return ''.join(c for c in content if c.isdigit())
+endsnippet
+
+snippet main "little programe with main function" b
+import sys
+from shutil import copyfile
+from os.path import join
+
+def main():
+    ${1:arg1}=sys.argv[1]
+    ${2:arg2}=sys.argv[2]
+
+if __name__ == "__main__":
+    main()
+endsnippet
+
+snippet findSurfixFile "find file name with specfic surfix in the directory" b
+def findSurfixFile(root,surfix): 
+    for parent,dirs,files in os.walk(root):
+        for f in files:
+            if f.endswith(surfix):
+                return join(parent,f)
+endsnippet

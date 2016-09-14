@@ -1,0 +1,11 @@
+snippet hw "Hello World" 
+Hello World!
+endsnippet
+
+snippet numseq "command of generate number sequence"
+:let i =0 | %g/^/ s/\d\+/\=submatch(0)+i . / | let i+=1
+endsnippet
+
+snippet a2z "abcdefghigklmnopqrstuvwxyz"
+abcdefghijklmnopqrstuvwxyz
+endsnippet

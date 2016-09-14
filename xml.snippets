@@ -1,0 +1,17 @@
+snippet network "btr config networke node" b
+<network enable="true">
+	<unit default="client">
+		<item ip="${1:serverip}" name="server" />
+	</unit>
+	<rule enable="true">
+		<item type="req" from="client" />
+		<item type="resp" from="server" />
+	</rule>
+</network>
+endsnippet
+
+snippet charset "btr config charset property node" b
+<property>
+	<attribute key="charset" value="${1:gbk}" />
+</property>
+endsnippet
