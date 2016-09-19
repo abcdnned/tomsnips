@@ -64,3 +64,15 @@ def findSurfixFile(root,surfix):
             if f.endswith(surfix):
                 return join(parent,f)
 endsnippet
+
+snippet findStartEnd "find start and end string in lines, return start and end index" b
+def findStartEnd(lines,start,end):
+    s=-1
+    e=-1
+    for i,line in enumerate(lines):
+        if start in line:
+            s=i
+        if s>0 and end in line:
+            e=i
+    return (s,e)
+endsnippet
