@@ -1,3 +1,26 @@
+global !p
+def findImportLoc(str):
+	buff=snip.buffer
+	for i,line in enumerate(buff):
+		if i>100 or line==str:
+			return -1
+	for i,line in enumerate(buff):
+		if len(line)==0 or line[0]!='#':
+			return i
+	return 0
+
+def addImport(impt,frm=''):
+	imp_string = 'import {}'.format(impt) if len(frm)==0 else 'from {} import {}'.format(frm,impt)
+	imp_loc = findImportLoc(imp_string)
+	if imp_loc>=0:
+		snip.buffer.append(imp_string, imp_loc)
+endglobal
+ 
+pre_expand "addImport('partial','functools')"
+snippet pf "partial function"
+partial(${1:func},${2:args})
+endsnippet
+
 snippet proclines "process lines read form file and do the output" b
 ${1:filename}=open(${2:input})
 lines=$1.readlines()
@@ -15,10 +38,6 @@ def loop(root):
             ${1:#todo}
         for f in files:
 			${2:#todo}
-endsnippet
-
-snippet todo "comment todo" b
-#todo
 endsnippet
 
 snippet getin "get string between tow supstrings" b
