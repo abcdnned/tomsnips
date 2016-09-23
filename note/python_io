@@ -1,5 +1,5 @@
-snippet ?io "file io" b
-"""
+python_io
+
 #read
 f=open('file path')
 lines=f.readlines()
@@ -9,5 +9,3 @@ for line in lines:
 #overwrite
 with open('file path','w') as f;
 	f.writelines(['one','two'])
-"""
-endsnippet

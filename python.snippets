@@ -31,6 +31,15 @@ for line in lines:
 $1.close()
 endsnippet
 
+snippet randint "get random integer" b
+def ri(l,h,d):
+    if l<h:
+        return d
+    elif l==h:
+        return l
+    return random.randint(l,h)
+endsnippet
+
 snippet loopdir "function to loop all files in dir" b
 def loop(root): 
     for parent,dirs,files in os.walk(root):
