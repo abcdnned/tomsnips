@@ -1,0 +1,5 @@
+scala_function
+
+#define a function
+def triple (x:Double) = 3 * x
+val triple = (x:Double) => 3 * x

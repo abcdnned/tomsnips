@@ -1,4 +1,6 @@
-scala_string
-
-#read words and print those length is greater than 12 in one line!
+//read words and print those length is greater than 12 in one line!
 io.Source.fromFile("01.txt").mkString.split("""[\s"\.,\)\()/]+""").filter(_.length > 12).distinct.foreach(println(_))
+
+//format
+"%d".format(1)
+
