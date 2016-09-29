@@ -1,0 +1,32 @@
+define an regex pattern
+
+    val pattern="[0-9]+".r
+
+if the pattern contains \ or "
+    
+    val pattern="""\s+[0-9]+\s"""".r
+ 
+use findAllIn method to get all matched
+
+    for(matchString <- pattern.findAllIn("99 bottles, 98 bottles"))
+
+cast matched to array
+
+    val matches = pattern.findAllIn("99 bottles, 98 bottles").toArray
+
+findFirstIn
+
+findPrefixOf
+
+replaceFirstIn
+
+replaceAllIn
+
+pattern match group
+
+    val pattern = "([0-9]+) ([a-z]+)".r
+    val pattern(num, item) = "99 bottles"
+    for(pattern(num, item) <- pattern.findAllIn("99 bottles, 98 bottles"))
+        do something
+
+
