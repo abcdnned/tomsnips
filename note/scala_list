@@ -1,0 +1,11 @@
+scala_list
+
+#construct a list
+val digits=List(4,2)
+
+9::List(4,2) //List(9,4,2)
+
+9::4::2::Nil
+=(9::(4::(2::Nil)))
+
+

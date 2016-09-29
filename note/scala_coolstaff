@@ -1,0 +1,9 @@
+when you want to use some class or method from other module, you can just add module name before them to use directly like:
+
+    io.Srouce.fromFile("input.txt")  or math.pow(2,3)
+
+singleton pattern in scala
+
+    object Singleton {}
+
+    note that there is no static class in scala

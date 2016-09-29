@@ -1,0 +1,20 @@
+scala_iterable
+
+head, last, headOption, lastOption
+tail init
+length isEmpty
+map(f) foreach(f) flatMap(f) collect(pf)
+reduceLeft(op) reduceRight(op) foldLeft(init)(op) foldRight(init)(op)
+reducd(op) fold(init)(op) aggregate(init)(op,combineOp)
+sum product max min
+count(pred) forall(pred) exists(pred)
+filter(pred) filterNot(pred) partition(pred)
+takeWhile(pred) dropWhile(pred) span(pred)
+take(n) drop(n) splitAt(n)
+takeRight(n) dropRight(n)
+slice(from,to)
+zip(coll2) zipAll(col2,fill,fill2) zipWithIndex
+grouped(n) sliding(n)
+mkString(before,between,after) addString(sb,before,between,after)
+toIterable toSeq toIndexedSeq toArray toList toStream toSet toMap
+copyToArray(arr) copyToArray(arr,start,length) copyToBuffer(buf)
