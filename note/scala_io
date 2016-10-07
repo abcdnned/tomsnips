@@ -7,6 +7,9 @@ val source=Source.fromFile("input")
 //from string
 val source=Source.fromString("hello world")
 
+//from url
+val html = io.Source.fromURL("http://horstmann.com", "UTF-8").mkString
+
 //read lines
 val lines=source.getLines
 

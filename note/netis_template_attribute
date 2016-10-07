@@ -1,0 +1,10 @@
+package cn.com.netis.dcd.parser.decoder.bank.iso;
+
+public interface CustomFieldIsoAttribute extends IsoAttribute{
+}
+
+//in Decode.java
+ @Override
+public ProtocolAttribute buildProtocolAttribute(final List<Configuration> config) {
+    return CustomFieldIsoAttributeData.newInstance(config);
+}

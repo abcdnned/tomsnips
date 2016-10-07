@@ -1,0 +1,59 @@
+package cn.com.netis.dcd.parser.decoder.bank.iso;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import cn.com.netis.dcd.parser.decoder.DefaultProtocolAttribute;
+import cn.com.netis.dcd.parser.huygens.attr.AttributeFactory;
+import cn.com.netis.dcd.parser.huygens.attr.MultiValueAttribute;
+import cn.com.netis.dcd.parser.huygens.attr.SoleAcceptPolicy;
+import cn.com.netis.dcd.parser.huygens.attr.SoleValue;
+import cn.com.netis.dcd.parser.huygens.attr.ValueItem;
+import cn.com.netis.dcd.parser.huygens.field.DecodeField;
+import cn.com.netis.dcd.parser.huygens.field.Encoding;
+import cn.com.netis.dcd.parser.huygens.field.FieldFactory;
+import cn.com.netis.dp.commons.lang.ValueType;
+
+public class CustomFieldIsoAttributeData extends DefaultProtocolAttribute
+        implements CustomFieldIsoAttribute {
+    
+
+    enum Key {
+        CustomFields,
+        Template,
+    }
+
+    public static CustomFieldIsoAttribute newInstance(final List<Configuration> config) {
+        final CustomFieldIsoAttributeData result = newInstance(new CustomFieldIsoAttributeData(),
+                config);
+        //load Template
+        getString(config, Key.Template, DEFAULT)
+        
+        //load CustomFields
+        Configuration fldconfig = getConfig(config, Key.CustomFields);
+        final SoleAcceptPolicy policy = AttributeFactory.newSolePolicy(fldconfig,
+                    ENABLE_WILDCARD);
+        final MultiValueAttribute<SoleValue> settings = AttributeFactory
+                .newSoleAttribute(
+                        fldconfig, policy);
+        for (int i = 0; i < settings.size(); i++) {
+            final ValueItem<SoleValue> item = settings.getItem(i);
+            final String hint = item.getHint();
+            final String flddesc = item.getText();
+        }
+
+        return result;
+    }
+
+    
+    /** The Constant LOG. */
+    private static final Logger LOG = LoggerFactory.getLogger(CustomFieldIsoAttributeData.class);
+
+}
+
