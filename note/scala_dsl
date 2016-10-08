@@ -1,0 +1,5 @@
+if call a method which has no parameters
+
+    def current() = 1
+
+    current is equal to current()

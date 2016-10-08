@@ -1,0 +1,23 @@
+snippet layerb "Description" b
+decodeStatus.addDecodeFlag(DecodeFlag.LayerBegin);
+endsnippet
+
+snippet layert "Description" b
+decodeStatus.addDecodeFlag(DecodeFlag.LayerTruncate);
+endsnippet
+
+snippet !hd "import huygens decode package" b
+import cn.com.netis.dcd.parser.huygens.decode.
+endsnippet
+
+snippet !buffer "import util.buffer package" b
+import cn.com.netis.dcd.parser.util.buffer.
+endsnippet
+
+snippet asciibuff "use AsciiBuffer to read String" b
+String ${1:vname} = AsciiBuffer.getString(${2:clearBuffer},${3:len});
+endsnippet
+
+snippet record "record value" 
+getRecordsManager().recordValue(${1:k}, ${2:v});
+endsnippet

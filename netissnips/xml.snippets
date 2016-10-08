@@ -1,0 +1,64 @@
+snippet wraplen "wraplength decoder" b
+<protocol id="wrap length" baseProtocol="tcp">
+	<property>
+		<attribute key="fieldSize" value="${1:length}"/>
+		<attribute key="fieldEncoding" value="${2:encoding}"/>
+	</property>
+	<recordField allItem="false">
+	</recordField>
+</protocol>
+endsnippet
+
+snippet padding "padding decoder" b
+<protocol id="padding" baseProtocol="tcp">
+	<property>
+		<attribute key="paddingLength" value="${1:reqlen},${2:resplen}" />
+	</property>
+</protocol>
+endsnippet
+
+snippet split "split decoder" b
+<protocol id="split" baseProtocol="tcp">
+    <property>
+        <attribute key="charset" value="gb2312"/>
+        <attribute key="separator" value="|"/>
+        <attribute key="needKvSplitter" value="true"/>
+        <attribute key="needConfiguration" value="true"/>
+    </property>
+    <recordField allItem="true">
+    </recordField>
+</protocol>
+endsnippet
+
+snippet network "define network" b
+<network enable="true">
+	<unit default="client">
+		<item ip="${1:serverip}" name="server" />
+	</unit>
+	<rule enable="true">
+		<item type="req" from="client" />
+		<item type="resp" from="server" />
+	</rule>
+</network>
+endsnippet
+
+snippet charset "charset property" b
+<property>
+	<attribute key="charset" value="${1:gb2312}" />
+</property>
+endsnippet
+
+snippet iso "base iso decoder" b
+<protocol id="base iso" baseProtocol="${1:base}">
+    <property>
+        <attribute key="template" value="cups" type="String"/>
+        <multiValueAttribute key="overrideFields" type="String" ignoreCase="false">
+            <value hint="17">fix;8;ascii;string;TransDate</value>
+            <value hint="31">ascii;2;ascii;string;F31</value>
+            <value hint="56">ascii;3;ascii;string;ICCSystemRelatedData</value>
+            <value hint="85">fix;4;ascii;string;F85</value>
+        </multiValueAttribute>
+    </property>
+    <recordField allItem="true"/>
+</protocol>
+endsnippet

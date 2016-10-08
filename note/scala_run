@@ -1,0 +1,20 @@
+compile and run
+
+    scalac Hello.scala
+    scala Hello
+    
+    notice that main class name must be the same as file name
+
+run REPL
+
+    >scala
+
+run use scala interpreter
+
+    scala Hello.scala
+
+using java interpreter
+
+    put scala-library.jar which located under $SCALA_HOME/lib in classpath
+
+    caava -cp $SCALA_HOME/lib/scala-library.jar;. Hello
