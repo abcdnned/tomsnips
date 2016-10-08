@@ -1,0 +1,7 @@
+val s = if (x > 0) 1 else -1
+val s = if (x > 0) 1 is equals to if (x > 0) 1 else () () repesent Unit which is void to java.
+
+else if
+    
+    if (x > 0) 1
+    else if (x == 0) 0 else -1

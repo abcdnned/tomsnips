@@ -1,0 +1,8 @@
+val and var
+    
+    val greeting: String = "hw"
+    var name: String = "Tom"
+
+define multi variables in one line 
+
+    val greeting, nam: String = "anything" 

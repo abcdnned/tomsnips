@@ -1,0 +1,5 @@
+in scala, value of x = 1 is Unit, so x = y = 1 is wrong.
+
+val distance = { val dx = x - x0; val dy = y - y0; sqrt(dx * dx + dy * dy) }
+
+{ r = r * n; n -= 1 } value is Unit

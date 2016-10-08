@@ -1,0 +1,11 @@
+REPL can only read oneline at a time
+
+if (x > 0) 1
+else if (x == 0) 0 else -1
+
+should be write in a way like:
+
+if (x > 0) { 1
+} else if (x == 0) 0 else -1
+
+use :paste to input block code

@@ -1,0 +1,153 @@
+-----------------------------------------------------------------------
+-                            *TRAIT DEFINE*                             -
+-----------------------------------------------------------------------
+trait Logger {
+    def log(msg: String)
+}
+
+class ConsoleLogger extends Logger {
+    def log(msg: String) = println(msg)
+}
+
+when you override abstract method of trait, you don't need to write override keyword, or you have to.
+
+-----------------------------------------------------------------------
+-                           * cool construct *                            -
+-----------------------------------------------------------------------
+
+you can mixin different kind of trait when construct an object:
+
+val acct = new SavingsAccount with ConsoleLogger
+
+    or
+
+val acct = new SavingsAccount with FileLogger
+
+-----------------------------------------------------------------------
+-                continurous process use super keyword                -
+-----------------------------------------------------------------------
+
+you can use several trait to call each other in specfic sequence, from the last declared one
+
+trait TimestampLogger extends Logged {
+    override def log (msg: String) {
+        super.log(new java.util.Date() + " " + msg)
+    }
+}
+
+trait ShortLogger extends Logged {
+    val maxLength = 15
+    override def log(msg: String) {
+        super.log(if (msg.length <= maxLength) msg else msg.substring(0, maxLength - 3) + "...")
+    }
+}
+
+val acct1 = new SavingsAccount with ConsoleLogger with TimestampLogger with ShortLogger
+val acct2 = new SavingsAccount with ConsoleLogger with ShortLogger with TimestampLogger
+
+acct1 : Sun Feb 06 17:45:45 ICT 2011 Insufficent...
+acct2 : Sun Feb 06 1...
+
+-----------------------------------------------------------------------
+-                      override abstract method                       -
+-----------------------------------------------------------------------
+
+if use super keyword in override abstract method, the method is still abstract
+
+trait Logger {
+    def log(msg: String)
+}
+
+abstract override trait TimestampLogger extends Logger {
+    override def log(msg: String) {
+        super.log(new java.util.Date() + " " + msg)
+    }
+}
+
+-----------------------------------------------------------------------
+-                    trait used as rich interface                     -
+-----------------------------------------------------------------------
+
+trait Logger {
+    def log(msg: String)
+    def info(msg: String) = log("INFO: " + msg)
+    def warn(msg: String) = log("WARN": " + msg)
+    def severe(msg: String) = log("SERVERE: " + msg)
+}
+
+-----------------------------------------------------------------------
+-                          trait constructor                          -
+-----------------------------------------------------------------------
+
+trait FileLogger extends Logger {
+    val out = new PrintWriter("app.log") // constructor
+}
+
+class SavingsAccount extends Account with FileLogger with ShortLogger
+construct sequence as follows:
+    
+        Account
+        Logger
+        FileLogger
+        ShortLogger
+        SavingsAccount
+
+note that trait consturctor can't contains parameters
+if your constructor used abstract value, you are in trouble
+
+trait FileLogger extends Logger {
+    val filename: String
+    val out = new PrintStream(filename)
+    def log(msg: String) { out.println(msg); out.flush() }
+}
+
+val acct = new { 
+    val filename = "myapp.log"
+} with SavingsAccount with FileLogger
+
+class SavingsAccount extends {
+    val filename = "myapp.log"
+} with Account with FileLogger {
+    ....
+}
+
+or use lazy value
+
+trait FileLogger extends Logger {
+    val filename: String
+    lazy val out = new PrintStream(filename)
+    def log(msg: String) { out.println(msg); out.flush() }
+}
+    
+-----------------------------------------------------------------------
+-                         trait extends class                         -
+-----------------------------------------------------------------------
+
+trait LoggedException extends Exception with Logged {
+    def log() = log(getMessage())
+}
+
+class UnhappyException extends LoggedException {
+    override def getMessage() = "arggh!"
+}
+
+class UnhappyException extends IOExceptoin with LoggedException // correct because IOExceptoin is subclass of Exception
+class UnhappyException extends JFrame with LoggedException // wrong, unrelated class 
+
+-----------------------------------------------------------------------
+-                              * self type *                              -
+-----------------------------------------------------------------------
+
+self type help constrain the class extends the trait must be the subclass of the self type
+
+trait LoggedException extends Logged {
+    this: Exception =>
+        def log() = log(getMessage())
+}
+
+or have specfic method
+
+trait LoggedException extends Logged {
+    this: { def getMessage(): String } =>
+        def log() = log(getMessage())
+}

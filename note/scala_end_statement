@@ -1,0 +1,13 @@
+you can use ; or not
+
+if not, scala will take operator or match () {} as the end of statment
+
+example
+
+    s = s0 + (v - v0) * t + 
+        0.5 * (a - a0) * t * t
+
+    if (n > 0) {
+        r = r * n
+        n -= 1
+    }

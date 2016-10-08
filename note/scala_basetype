@@ -1,0 +1,5 @@
+Byte Char Short Int Long Float Double Boolean 8 basic type
+
+use java.lang.String to repesent String
+
+implicit object StringOps, use that scala added hundreds method to String. And others like RichInt RichDouble RichChar...
