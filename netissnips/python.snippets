@@ -1,132 +1,33 @@
 #dcd field define start
-snippet fielddefine "dcd field define line" b
-def fielddefine(index,l,fn,record=True,charset='Encoding.CHARSET'):
-    if not record:
-        return '{{ {{ {}, null, {}, {} }}, {{ "", null, false, "{}" }} }},\n'.format(index,l,charset,fn)
-    return '{{ {{ {}, null, {}, {} }}, {{ "", ValueType.STRING, false, "{}" }} }},\n'.format(index,l,charset,fn)
-endsnippet
-
-snippet definecloser "dcd field define closer" b
-def definecloser():
-    return '};\n'
-endsnippet
-
-snippet definehead "dcd field define header" b
-def definehead(name):
-    return 'static final Object[][][] {} = {{ \n'.format(name)
-endsnippet
-
-snippet definemap "dcd field define regesiter to map" b
-def defineregmap(mapname,regname):
-    return '{}.put("{}", new Object[][][] {{\n'.format(mapname,regname)
-endsnippet
-
-snippet staticfield "dcd field static define" b
-def staticfield(fieldname,defname):
-	return 'private static final DecodeField[] {} = new DecodeField[{}.length];\n'.format(fieldname,defname)
-endsnippet
-
-snippet definebuild "dcd field build" b
-def fieldbuild(fieldname,defname):
-	return 'BankFieldFactory.buildFields({},{})\n'.format(fieldname,defname)
-endsnippet
-
-snippet staticfieldreg "dcd field static field reg to map" b
-def defineregmap(mapname,regname,fieldname):
-    return '{}.put("{}", {})\n'.format(mapname,regname,fieldname)
-endsnippet
-
-snippet dcdgendef "dcd generate field define" b
+snippet gendefshort "generate java field define base on protocols" b
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 from os.path import join
 
-def getin(content,start,end):
-    s=content.find(start)
-    e=content.find(end,s+len(start))
-    return content[s+len(start):e]
+#config
+ws='c:/Users/tom.yang/Desktop/${1:dstdir}'
+deff='def.txt'
+outf='out.txt'
+rra=True
+req=True
 
-def checkdefine(line):
-    return '_RRA' in line
 
-def checkfield(line):
-    return '<field' in line
+def checkDefine(line):
+    pass
 
-def fielddefine(index,l,fn,record=True,charset='Encoding.CHARSET'):
-    if not record:
-        return '{{ {{ {}, null, {}, {} }}, {{ "", null, false, "{}" }} }},\n'.format(index,l,charset,fn)
-    return '{{ {{ {}, null, {}, {} }}, {{ "", ValueType.STRING, false, "{}" }} }},\n'.format(index,l,charset,fn)
+def parse_define_name(line):
+    pass
 
-def definehead(name):
-    return ' private static final Object[][][] {} = {{ \n'.format(name)
+def isFieldLine(line):
+    pass
 
-def definecloser():
-    return '};\n'
+def getFieldName(line):
+    pass
 
-def staticfield(fieldname,defname):
-    return 'private static final DecodeField[] {} = new DecodeField[{}.length];\n'.format(fieldname,defname)
+def getFieldLength(line):
+    pass
 
-def fieldbuild(fieldname,defname):
-    return 'BankFieldFactory.buildFields({},{});\n'.format(fieldname,defname)
-
-def defineregmap(mapname,regname,fieldname):
-    return '{}.put("{}", {})\n'.format(mapname,regname,fieldname)
-
-def searchline(lines,s,pattern,limit):
-    for i in range(limit):
-        if pattern in lines[s+i]:
-            return s+i
-    return -1
-
-i=open('${1:input}')
-lines=i.readlines()
-
-defs=''
-fld=''
-build=''
-
-firstflag=True
-index=0
-
-for ln,line in enumerate(lines):
-    if checkdefine(line):
-        if firstflag:
-            firstflag=False
-        else:
-            defs+=definecloser()
-        index=0
-        name=${2:getname}
-        defname='DEF_'+name
-        fieldname='FIELD_'+name
-        defs+=definehead(defname)
-        fld+=staticfield(fieldname,defname)
-        build+=fieldbuild(fieldname,defname)
-    elif checkfield(line):
-        ${3:fielddefine}
-        index+=1
-
-defs+=definecloser()
-        
-
-i.close()
-o=open('${4:output}','w')
-o.write(defs)
-o.write(fld)
-o.write('static {\n')
-o.write(build)
-o.write('}\n')
-o.flush()
-o.close()
-
-endsnippet
-
-snippet gmd "generate multi define files" b
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-from os.path import join
-
+#system methods
 def getin(content,start,end):
     s=content.find(start)
     e=content.find(end,s+len(start))
@@ -135,6 +36,85 @@ def getin(content,start,end):
 def getnumin(content):
     return ''.join(c for c in content if c.isdigit())
 
+def fielddefine(index,l,fn):
+    return '{{ {{ {}, null, {}, Encoding.CHARSET }}, {{ "", ValueType.STRING, true, "{}" }} }},\n'.format(index,l,fn)
+
+def add_close():
+    return '};\n'
+
+def add_header(name):
+    return ' private static final Object[][][] {} = {{ \n'.format(name)
+
+def staticfield(fieldname,defname):
+    return 'static final DecodeField[] {} = new DecodeField[{}.length];\n'.format(fieldname,defname)
+
+def fieldbuild(fieldname,defname):
+    return 'BankFieldFactory.buildFields({},{});\n'.format(fieldname,defname)
+
+#logic
+i=open(join(ws,deff))
+lines=i.readlines()
+defs=''
+fd=True
+index=0
+blds=''
+fld=''
+
+for line in lines:
+    if checkDefine(line):
+        if not fd:
+            defs+=add_close()
+        defn=parse_define_name(line)
+        if rra :
+            defn = defn + '_REQ' if req else defn + '_RESP'
+            req = not req
+        defs+=add_header(defn+'_DEF')
+        fld+=staticfield(defn+'_FIELD',defn+'_DEF')
+        blds+=fieldbuild(defn+'_FIELD',defn+'_DEF')
+        index=0
+        fd=False
+    elif isFieldLine(line):
+        fn=getFieldName(line)
+        len=getFieldLength(line)
+        defs+=fielddefine(index,len,fn)
+        index+=1
+defs+=add_close()
+
+#print defs
+#print fld
+#print blds
+
+i.close()
+outpath = join(ws, outf)
+o=open(outpath,'w')
+o.write(defs)
+o.write(fld)
+o.write('static {\n')
+o.write(blds)
+o.write('}\n')
+o.flush()
+o.close()
+endsnippet
+
+snippet gendef "generate define base on protocols" b
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from os.path import join
+
+#runtime parameters
+JAVA_MAP_NAME='WebbankBodyFlds'
+PKGNAME='jyrcb'
+DEF_START_SURFIX_NUM=7
+DEF_PREFIX='WebbankFldDef'
+INPUT_PATH='jyrcbinner.csv'
+LIMIT=55
+OUTPUT_PATH='c:/Users/tom.yang/Desktop/jyrcbinner/'
+MAP_CONS_NAME='FIELD_MAP'
+FLD_LEN_IDX=2
+FLD_NAME_IDX=0
+
+#custome implements method
 def hasdefname(line):
     pass
 
@@ -143,6 +123,18 @@ def checkdefine(line):
 
 def checkfield(line):
     pass
+
+def getname(line):
+    pass
+
+#system method
+def getin(content,start,end):
+    s=content.find(start)
+    e=content.find(end,s+len(start))
+    return content[s+len(start):e]
+
+def getnumin(content):
+    return ''.join(c for c in content if c.isdigit())
 
 def deffldmap(mapn):
     return 'static final Map<String,DecodeField[]> {} =new HashMap<String,DecodeField[]>();\n'.format(mapn)
@@ -176,9 +168,6 @@ def searchline(lines,s,pattern,limit):
             return s+i
     return -1
 
-def getname(line):
-    pass
-
 def gendeffilehead(pkg,deffn):
     return 'package cn.com.netis.dcd.parser.decoder.bank.{};\nimport cn.com.netis.dcd.parser.huygens.field.DecodeField;\nimport cn.com.netis.dcd.parser.huygens.field.Encoding;\nimport cn.com.netis.dcd.parser.huygens.field.bank.BankFieldFactory;\nimport cn.com.netis.dp.commons.lang.ValueType;\n\npublic class {} {{\n\n'.format(pkg,deffn)
 
@@ -188,7 +177,7 @@ def genmaphead(pkg,classn):
 
 def writedefs(defs,fld,build,f):
     o=open(f,'w')
-    o.write(gendeffilehead('${5:pkgname}',deffn+str(n)))
+    o.write(gendeffilehead(PKGNAME,deffn+str(n)))
     o.write(defs)
     o.write(fld)
     o.write('static {\n')
@@ -200,7 +189,7 @@ def writedefs(defs,fld,build,f):
 
 def writereg(n,regs,f,mapdef):
     o=open(f,'w')
-    o.write(genmaphead('$5','${4:name of java fields map file}'))
+    o.write(genmaphead(PKGNAME,JAVA_MAP_NAME))
     o.write(mapdef)
     o.write('static {\n')
     o.write(regs)
@@ -209,7 +198,7 @@ def writereg(n,regs,f,mapdef):
     o.flush()
     o.close()
 
-i=open('${1:path of intput file}')
+i=open(INPUT_PATH)
 lines=i.readlines()
 
 rraflag=0
@@ -219,20 +208,19 @@ fld=''
 build=''
 regs=''
 
-deffn='${2:preffix of define java file}'
+deffn=DEF_PREFIX
 
 firstflag=True
 index=0
 name=''
 
 defined=0
-limit=55
-n=1
+limit=LIMIT
+n=DEF_START_SURFIX_NUM
 
 
 
-outputws='${3:output file work space}'
-mapdefn='$4'
+outputws=OUTPUT_PATH
 
 for ln,line in enumerate(lines):
     if hasdefname(line):
@@ -252,22 +240,21 @@ for ln,line in enumerate(lines):
                 defined=0
                 n+=1
             index=0
-			#figure out name of defines, fields and build statement
-            #rra='REQ_' if rraflag==0 else 'RESP_'
-            #rraflag=(rraflag+1)%2
-            #defname='DEF_'+rra+name
-            #fieldname='FIELD_'+rra+name
-			defname=
-			fieldname=
+            #figure out name of defines, fields and build statement
+            rra='REQ_' if rraflag==0 else 'RESP_'
+            rraflag=(rraflag+1)%2
+            defname='DEF_'+rra+name
+            fieldname='FIELD_'+rra+name
             defs+=definehead(defname)
             fld+=staticfield(fieldname,defname)
             build+=fieldbuild(fieldname,defname)
-            regs+=putfld('FIELD_MAP',name+rra[:-1].lower(),'{}{}'.format(deffn,n),fieldname)
+            regs+=putfld(MAP_CONS_NAME,name+rra[:-1].lower(),'{}{}'.format(deffn,n),fieldname)
             defined+=1
         if checkfield(line):
-			#figure out what's the name of field and the length of this field
-            fn=
-            length=
+            #figure out what's the name of field and the length of this field
+            its=line.split(',')
+            fn=its[FLD_NAME_IDX]
+            length=getnumin(its[FLD_LEN_IDX])
             defs+=fielddefine(index,length,fn)
             index+=1
 
@@ -277,7 +264,5 @@ if defined>0:
 
 i.close()
 
-writereg(n,regs,'{}{}.java'.format(outputws,mapdefn),deffldmap('FIELD_MAP'))
-
-
+writereg(n,regs,'{}{}.java'.format(outputws,JAVA_MAP_NAME),deffldmap(MAP_CONS_NAME))
 endsnippet

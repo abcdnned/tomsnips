@@ -6,12 +6,16 @@ snippet layert "Description" b
 decodeStatus.addDecodeFlag(DecodeFlag.LayerTruncate);
 endsnippet
 
-snippet !hd "import huygens decode package" b
-import cn.com.netis.dcd.parser.huygens.decode.
+snippet !huygens "import huygens decode package" b
+import cn.com.netis.dcd.parser.huygens.
 endsnippet
 
 snippet !buffer "import util.buffer package" b
 import cn.com.netis.dcd.parser.util.buffer.
+endsnippet
+
+snippet !common "import dp.commons.common package" b
+import cn.com.netis.dp.commons.common.
 endsnippet
 
 snippet asciibuff "use AsciiBuffer to read String" b
@@ -20,4 +24,18 @@ endsnippet
 
 snippet record "record value" 
 getRecordsManager().recordValue(${1:k}, ${2:v});
+endsnippet
+
+snippet ifrra "get rraType and do something" b
+RRAType rraType=getRecordsManager().getRRAType();
+if (rraType.equals(RRAType.req) || rraType.equals(RRAType.resp)) {
+	DecodeField[] ${1:head}=rraType.equals(RRAType.req)?${2:REQ_FIELDS}:${3:RESP_FIELDS};
+}
+endsnippet
+
+snippet forfields "Description" b
+for (DecodeField field : ${1:fields}) {
+	field.setCharset(getPreferredCharset());
+	getRecordsManager().recordValue(field, ${2:clearBuffer});
+}
 endsnippet
