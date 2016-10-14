@@ -1,0 +1,3 @@
+find modified files during the last n days
+    
+    find . -mtime -n -ls

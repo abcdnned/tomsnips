@@ -39,3 +39,24 @@ for (DecodeField field : ${1:fields}) {
 	getRecordsManager().recordValue(field, ${2:clearBuffer});
 }
 endsnippet
+
+snippet defs "dcd define template" b
+{ { ${1:id} ,${2:null},${3:len},Encoding.${4:CHARSET}}, { "${5:TRANS_TYPE}", ValueType.STRING, true, "$5"} },
+endsnippet
+
+snippet dcdwraplen "wap length decoder tempalte" b
+if (clearBuffer.remaining() > HEAD_LEN) {
+	try {
+		int len = AsciiBuffer.getInt(clearBuffer, HEAD_LEN);
+		decodeStatus.addDecodeFlag(DecodeFlag.LayerBegin);
+		if (clearBuffer.remaining() + HEAD_LEN >= len) {
+			return true;
+		}
+	} catch (NumberFormatException e) {
+	} catch (Throwable ignore) {
+		LOG.warn(ExceptionUtils.getStackTrace(ignore));
+	}
+}
+
+throw new BufferTruncatedException("buffer truncated.");
+endsnippet

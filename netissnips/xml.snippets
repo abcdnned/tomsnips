@@ -10,15 +10,17 @@ snippet wraplen "wraplength decoder" b
 endsnippet
 
 snippet padding "padding decoder" b
-<protocol id="padding" baseProtocol="tcp">
+<protocol id="padding" baseProtocol="${1:base}">
 	<property>
 		<attribute key="paddingLength" value="${1:reqlen},${2:resplen}" />
+		<attribute key="recordPaddingBuffer" value="true" />
 	</property>
+	<recordField allItem="true"/>
 </protocol>
 endsnippet
 
 snippet split "split decoder" b
-<protocol id="split" baseProtocol="tcp">
+<protocol id="split" baseProtocol="${1:base}">
     <property>
         <attribute key="charset" value="gb2312"/>
         <attribute key="separator" value="|"/>
@@ -61,4 +63,8 @@ snippet iso "base iso decoder" b
     </property>
     <recordField allItem="true"/>
 </protocol>
+endsnippet
+
+snippet field "rename field" b
+<field item="${2:oldName}">${1:newName}</field>
 endsnippet

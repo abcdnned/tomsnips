@@ -1,28 +1,35 @@
-snippet defs "dcd define template" b
-{ { ${1:id} ,${2:null},${3:len},Encoding.${4:CHARSET}}, { "${5:TRANS_TYPE}", ValueType.STRING, true, "$5"} },
-endsnippet
-
-snippet dcdwraplen "wap length decoder tempalte" b
-if (clearBuffer.remaining() > HEAD_LEN) {
-	try {
-		int len = AsciiBuffer.getInt(clearBuffer, HEAD_LEN);
-		decodeStatus.addDecodeFlag(DecodeFlag.LayerBegin);
-		if (clearBuffer.remaining() + HEAD_LEN >= len) {
-			return true;
-		}
-	} catch (NumberFormatException e) {
-	} catch (Throwable ignore) {
-		LOG.warn(ExceptionUtils.getStackTrace(ignore));
-	}
-}
-
-throw new BufferTruncatedException("buffer truncated.");
-endsnippet
-
 snippet syso "Description" b
 System.out.println("${1:msg}");
 endsnippet
 
 snippet psf "private static final" b
 private static final 
+endsnippet
+
+snippet !lang3 "import apache.common.lang3 package" b
+import org.apache.commons.lang3.
+endsnippet
+
+snippet getst "ExceptionUtils.getStackTrace" i
+ExceptionUtils.getStackTrace(${1:ev})
+endsnippet
+
+snippet !exec "import apache exec package" b
+import org.apache.commons.exec.
+endsnippet
+
+snippet execstr "executor string use apache exec classes" b
+public String execToString(String command) throws Exception {
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    CommandLine commandline = CommandLine.parse(command);
+    DefaultExecutor exec = new DefaultExecutor();
+    PumpStreamHandler streamHandler = new PumpStreamHandler(outputStream);
+    exec.setStreamHandler(streamHandler);
+    exec.execute(commandline);
+    return(outputStream.toString());
+}
+endsnippet
+
+snippet ill "throw IllegalArgumentException" b
+throw new IllegalArgumentException("${1:msg}");
 endsnippet

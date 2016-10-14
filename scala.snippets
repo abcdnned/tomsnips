@@ -1,21 +1,3 @@
-snippet noteSource "read file use source" b
-import io.Source
-//from file
-val source=Source.fromFile("input")
-//from string
-val source=Source.fromString("hello world")
-//read lines
-val lines=Source.getLines
-//to array
-val arr=lines.toArray[String]
-//iter char
-for(c <- source) c match{
-	case '\t' => ...
-	case _ => ...
-}
-//peek next char
-val iter=source.buffered
-while(iter.hasNext) print(iter.head)
-//read whole file to string
-val content = source.mkString
+snippet ps "println" b
+println("${1:lalala}")
 endsnippet
