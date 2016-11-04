@@ -1,0 +1,135 @@
+KNOW ABOUT BASIC TYPE
+    Number Float String Funcref List Dictionary
+    echo type(1)
+    echo type('hello')
+    echo type(function("getline"))
+    echo type([1,2])
+    echo type({})
+    echo type(1.1)
+    0
+    1
+    2
+    3
+    4
+    5
+
+BE ABLE TO DEFINE A VARIABLE
+    a variable name consists of ASCII letters, digits and the underscore
+    let i = 1
+
+
+LEARN ABOUT BUILT-IN FUNCTION
+    echo {exp} {exp}
+    range({from} [, {to} [, {step}]])
+    exists(str)
+    sleep 3 " sleep 3 seconds
+    execute "tag" . tag_name "execute colon commands
+    normal gg=G "execute Normal mode command
+    eval(str) "If you don't want to execute a string but evaluate it to get its expression value
+
+
+LEARN HOW TO RUN A SMALL APP
+    if exists("g:loaded_helloworld")
+        finish
+    endif
+
+    let g:loaded_helloworld = 1
+
+    if !hasmapto('<Plug>HelloWorld')
+      map <unique> <Leader>p <Plug>HelloWorld
+    endif
+
+    noremap <unique> <script> <Plug>HelloWorld  :call <SID>Say()<CR>
+
+    function s:Say()
+        echo "Hello World!"
+    endfunction
+
+    put this in the correct directory
+
+
+BE ABLE TO WRITE CONTROLE STATEMENT
+    
+	:if {condition}
+	   {statements}
+	:elseif {condition}
+	   {statements}
+	:else
+	   {statements}
+	:endif
+
+	while i < 5
+	  echo "count is" i
+	  let i += 1
+	endwhile
+
+
+LEARN TO MANIPULATE STRING
+    let name = "string"
+
+	a =~ b		matches with
+	a !~ b		does not match with
+    a is string b is used as a pattern
+
+    substitute(line, '\a', "*", "g") " replace a with *, g is a flag
+	strlen()		length of a string
+	stridx()		first index of a short string in a long string
+	strpart()		get part of a string
+	str2nr()		convert a string to a Number
+	split()			split a String into a List
+
+
+LEARN TO MANIPULATE SEQUENCE
+    define list
+        :let alist = ['aap', 'mies', 'noot']
+        :echo alist[0]
+    iterate lsit
+        :for n in alist
+        :  echo n
+        :endfor
+
+    built-in function
+        get()			get an item without error for wrong index
+        len()			number of items in a List
+        empty()			check if List is empty
+        add()			append an item to a List
+
+
+KNOW HOW TO USE A FUNCTION
+	:function Min(num1, num2)
+	:  if a:num1 < a:num2
+	:  if a:num1 < a:num2
+	:    let smaller = a:num1
+	:  else
+	:    let smaller = a:num2
+	:  endif
+	:  return smaller
+	:endfunction
+
+    echo Min(1,2)
+        or
+    call Min(1,2)
+
+
+LEARN ABOUT BASIC DSL API LIKE FILE IO
+    manipulate option
+        set {optoin} = {value}
+        &optoin_name
+    manipulate buffer
+        getline(".") "get current line from current buffer
+        setline(".", anything)
+        append()		append line or list of lines in the buffer
+        nextnonblank()		find next non-blank line
+        prevnonblank()		find previous non-blank line
+        search()		find a match for a pattern
+        bufname()		get the name of a specific buffer
+        bufnr()			get the buffer number of a specific buffer
+        getbufline()		get a list of lines from the specified buffer
+    system-functions
+        getcwd()		get the current working directory
+        readfile()		read a file into a List of lines
+        writefile()		write a List of lines into a file
+
+KNOE WHERE TO LOOK UP API DOC
+
+    int the eval.txt, or just type help functions

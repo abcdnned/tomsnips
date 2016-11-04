@@ -12,10 +12,12 @@ endsnippet
 snippet padding "padding decoder" b
 <protocol id="padding" baseProtocol="${1:base}">
 	<property>
-		<attribute key="paddingLength" value="${1:reqlen},${2:resplen}" />
+		<attribute key="paddingLength" value="${2:reqlen},${3:resplen}" />
 		<attribute key="recordPaddingBuffer" value="true" />
 	</property>
-	<recordField allItem="true"/>
+	<recordField allItem="true">
+		<field item="PaddingBuffer">${4:buffname}</field>
+	</recordField>
 </protocol>
 endsnippet
 
@@ -67,4 +69,92 @@ endsnippet
 
 snippet field "rename field" b
 <field item="${2:oldName}">${1:newName}</field>
+endsnippet
+
+snippet dsl "dsl decoder" b
+<protocol id="dsl" baseProtocol="${1:base}">
+	<property>
+		<attribute key="charset" value="gbk" />
+		<multiValueAttribute key="pattern" type="String" ignoreCase="false">
+			<value>
+				<![CDATA[
+<buffer>
+    <!-- The buffer must completed. -->
+    <get var="containsNextLayerComplete" target="decodeStatus"
+        property="containsNextLayerComplete" />
+    <if test="${containsNextLayerComplete == false}">
+        <throw exception="ProtocolErrorException" message="The layer must completed." />
+    </if>
+    <core:decodeStatus status="LayerBegin" />
+</buffer>
+				]]>
+			</value>
+		</multiValueAttribute>
+	</property>
+	<recordField allItem="true" />
+</protocol>
+endsnippet
+
+snippet regex "regex decoder" b
+<protocol id="regex" baseProtocol="tcp">
+    <property>
+        <attribute key="maxSearchCount" value="1" type="Integer"/>
+        <attribute key="unsetLayerBeginFlag" value="false" type="boolean"/>
+        <multiValueAttribute key="requestPattern" type="String" ignoreCase="false">
+            <value hint="name=*|flag=CASE_INSENSITIVE:COMMENTS">
+                <![CDATA[
+                (?<Action>POST|GET|PUT|DELETE)\s(?<Url>.+)\sHTTP/1.1\s+
+                HOST:\s(?<Host>.+)\s+
+                Connection:\s(?<Connection>.+)\s+
+                ]]>
+            </value>
+        </multiValueAttribute>
+        <multiValueAttribute key="responsePattern" type="String" ignoreCase="false">
+            <value hint="name=*|flag=CASE_INSENSITIVE:COMMENTS">
+                <![CDATA[
+                HTTP/1.1\s(?<StatusCode>\d+)\s(?<Status>\w+)\s+
+                (Date:\s(?<Date>.+)\s+)?
+                (Server:\s(?<Server>.+)\s+)?
+                (ETag:\s.+\s+)?
+                (Last-Modified:\s.+\s+)?
+                (Content-Length:\s.+\s+)?
+                ]]>
+            </value>
+        </multiValueAttribute>
+    </property>
+    <recordField allItem="true"/>
+</protocol>
+endsnippet
+
+snippet searchpattern "search pattern decoder" b
+<protocol id="search pattern" baseProtocol="${1:base}">
+	<property>
+		<attribute key="searchLength" value="0" type="Integer" />
+		<multiValueAttribute key="pattern" type="String" ignoreCase="false">
+			<value hint="positionAfterPattern=false|offset=-1">3c</value>
+		</multiValueAttribute>
+	</property>
+</protocol>
+endsnippet
+
+snippet xml "xml decoder" b
+<protocol id="xml" baseProtocol="${1:http}">
+	<recordField allItem="true" template="xpath" />
+</protocol>
+endsnippet
+
+snippet searchxml "search xml decoder" b
+<protocol id="search xml" baseProtocol="http">
+	<property>
+		<attribute key="startSearchSize" value="0" type="Integer" />
+		<attribute key="endSearchSize" value="250" type="Integer" />
+		<attribute key="disableCheckDeclaration" value="true" type="Boolean" />
+		<multiValueAttribute key="rootNode">
+			<value>RspCode</value>
+			<value>BrcName0</value>
+		</multiValueAttribute>
+	</property>
+	<recordField allItem="true" template="xpath">
+	</recordField>
+</protocol>
 endsnippet

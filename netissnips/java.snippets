@@ -14,11 +14,15 @@ snippet !buffer "import util.buffer package" b
 import cn.com.netis.dcd.parser.util.buffer.
 endsnippet
 
-snippet !common "import dp.commons.common package" b
-import cn.com.netis.dp.commons.common.
+snippet !commons "import dp.commons.common package" b
+import cn.com.netis.dp.commons.
 endsnippet
 
-snippet asciibuff "use AsciiBuffer to read String" b
+snippet pkgdcd "decoder path" i
+cn.com.netis.dcd.parser.decoder.
+endsnippet
+
+snippet asciibuff "use AsciiBuffer to read String" i
 String ${1:vname} = AsciiBuffer.getString(${2:clearBuffer},${3:len});
 endsnippet
 
@@ -59,4 +63,131 @@ if (clearBuffer.remaining() > HEAD_LEN) {
 }
 
 throw new BufferTruncatedException("buffer truncated.");
+endsnippet
+
+
+snippet logpkt "do output when in a packet" b
+if (getPacket().getPacketId() == ${1:pktid}) {
+	System.out.println(123);
+}
+endsnippet
+
+snippet buffertruncated "Description" b
+throw new BufferTruncatedException(${1:message});
+endsnippet
+
+snippet bufferchecker "output buffer content in hex format" b
+int pp=clearBuffer.position();
+if (getPacket().getPacketId() == ${1:pktid}) {
+	int consumed=clearBuffer.position()-pp;
+	if(consumed>0){
+		byte[] peek=new byte[consumed];
+		clearBuffer.position(pp);
+		clearBuffer.get(peek,0,consumed);
+		System.out.println(DatatypeConverter.printHexBinary(peek));
+	}
+endsnippet
+
+snippet charsetbuff "get String use CharsetBuffer" i
+String ${1:field}=CharsetBuffer.getString(${2:clearBuffer}, ${3:len}, getPreferredCharset());
+endsnippet
+
+snippet dcdlog "creat dcd sl4j LOG object" b
+/** The Constant LOG. */
+private static final Logger LOG = LoggerFactory.getLogger(${1:Class}.class);
+endsnippet
+
+snippet decodeManager "define decodeManager" b
+import cn.com.netis.dcd.parser.decoder.DecoderManager;
+import cn.com.netis.dcd.parser.decoder.bank.BankProtocols;
+
+public final class ${1:name} extends DecoderManager {
+
+    /**
+     * New instance.
+     * 
+     * @return the core protocols
+     */
+    public static DecoderManager newInstance() {
+        final DecoderManager result = new $1();
+        return result;
+    }
+
+    /**
+     * Prevents instantiation.
+     */
+    private $1() {
+        super();
+    }
+    
+}
+endsnippet
+
+snippet defstart "start define fields" b
+private static final Object[][][] ${1:defname}={
+            
+};
+endsnippet
+
+snippet printhex "print buffer in hex format use javax.DatatypeConverter" b
+DatatypeConverter.printHexBinary(${1:bytes})
+endsnippet
+
+snippet protocolManager "protocol manager" b
+import cn.com.netis.dcd.parser.decoder.bank.BankProtocols;
+import cn.com.netis.dp.commons.protocol.ProtocolManager;
+
+public final class ${1:name} extends ProtocolManager {
+
+    /**
+     * New instance.
+     * 
+     * @return the core protocols
+     */
+    public static ProtocolManager newInstance() {
+        final ProtocolManager result = new $1();
+        return result;
+    }
+
+    /**
+     * Prevents instantiation.
+     */
+    private $1() {
+        super();
+    }
+
+}
+endsnippet
+
+snippet Decoder "define a class of decoder" b
+public class ${1:DecoderName} extends AbstractDecoder {
+
+	@Override
+	public boolean decodeClearBuffer(final ByteBuffer clearBuffer, final DecodeStatus decodeStatus,
+		final ProtocolAttribute protAttr) {
+	}
+
+    @Override
+    public void cleanupDecoder() {
+        // do nothing
+    }
+}
+endsnippet
+
+snippet rebuild "override rebuild method of AbstractDecoder" b
+@Override
+public ByteBuffer getCompleteRebuildPayload(final boolean clearFlag) {
+	final ByteBuffer tempBuffer = rebuildPayload;
+	if (clearFlag) {
+		rebuildPayload = null;
+	}
+	return tempBuffer;
+}
+endsnippet
+
+snippet clearDecoder "override clearDecoder method of AbstractDecoder" b
+@Override
+public void cleanupDecoder() {
+	// do nothing
+}
 endsnippet
