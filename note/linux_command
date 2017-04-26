@@ -1,0 +1,14 @@
+find
+
+USAGE
+
+find <test> <action>
+find in the current directory, will iterate subfolders.
+
+EXAMPLE
+
+find -name 'my*' -ls
+find name startswith my and list the details
+
+find --type f -mmin -10
+find file type is file and modified in the last ten minutes

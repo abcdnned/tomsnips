@@ -1,5 +1,18 @@
+snippet newThread "start a new annoname thread" b
+new Thread(new Runnable() {
+	@Override
+	public void run() {
+			${1:code}
+	}
+}).start();
+endsnippet
+
 snippet syso "Description" b
-System.out.println("${1:msg}");
+System.out.println(${1:msg});
+endsnippet
+
+snippet print "print" b
+System.out.print(" ${1:msg});
 endsnippet
 
 snippet psf "private static final" b

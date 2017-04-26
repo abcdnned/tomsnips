@@ -158,3 +158,156 @@ snippet searchxml "search xml decoder" b
 	</recordField>
 </protocol>
 endsnippet
+
+snippet dslfld "field in dsl" b
+<field name="${2:fldname}" cache="${3:true}" record="${4:true}">
+	<L>${1:len}</L>
+</field>
+endsnippet
+
+snippet kvpair "kvpair" b
+<protocol id="keyvalue pair" baseProtocol="${1:base}">
+	<property>
+		<attribute key="charset" value="GBK"/>
+		<attribute key="kvSplitter" value="=" type="Char" />
+		<attribute key="itemSplitter" value="|" type="Char" />
+		<attribute key="end" value="|" type="Char" />
+	</property>
+	<recordField allItem="true">
+	</recordField>
+</protocol>
+endsnippet
+
+snippet replacebyte "byte replace decoder" b
+<protocol id="byte replace" baseProtocol="${1:base}">
+    <property>
+        <attribute key="replacedByteInAscii" value="${2:from}" />
+        <attribute key="replacedValueInAscii" value="${3:to}" />
+    </property>
+    <recordField allItem="false">
+    </recordField>
+</protocol>
+endsnippet
+
+snippet json "json decoder" b
+<protocol id="json" baseProtocol="${1:base}">
+	<recordField allItem="true" template="json">
+	</recordField>
+</protocol>
+endsnippet
+
+snippet detectbegin "detect begin decoder" b
+<protocol id="detect begin" baseProtocol="tcp">
+	<property>
+		<attribute key="searchLength" value="100" type="String" />
+		<attribute key="useWeakLayerBegin" value="false" type="boolean" />
+		<multiValueAttribute key="pattern" type="String" ignoreCase="false">
+			<value hint="hex">${1:pattern}</value>
+		</multiValueAttribute>
+	</property>
+	<recordField allItem="true" />
+</protocol>
+endsnippet
+
+snippet detectend "detect end decoder" b
+<protocol id="detect end" baseProtocol="detect begin">
+	<property>
+		<attribute key="searchLength" value="${1:0}" type="Integer"/>
+		<multiValueAttribute key="pattern" type="String" ignoreCase="false">
+			<value hint="hex">${2:pattern}</value>
+		</multiValueAttribute>
+	</property>
+</protocol>
+endsnippet
+
+snippet join "join extend field" b
+<extendField>
+	<field op="join" item="Cont_Type StatusCode Connection" separator=":">JoinedField</field>
+</extendField>
+endsnippet
+
+snippet dummy "dummy used in http stack" b
+<protocol id="dummy" baseProtocol="http">
+    <recordField allItem="false"></recordField>
+</protocol>
+endsnippet
+
+snippet dslwraplen "dsl wrap length" b
+<protocol id="dsl" baseProtocol="tcp">
+	<property>
+		<multiValueAttribute key="pattern" type="String" ignoreCase="false">
+			<value>
+				<![CDATA[
+<buffer>
+	<field name="magic" cache="true" record="false">
+		<L>4</L>
+	</field>
+	<if test="${magic == 'F009'}" >
+		<core:decodeStatus status="LayerBegin" />
+		<field name="len" cache="true" record="false">
+			<L>5</L>
+		</field>
+		<if test="${str:isNumeric(len)}">
+			<log value="${len}"/>
+			<log value="${_buffer.remaining()}"/>
+			<if test="${_buffer.remaining() &lt; len}">
+				<core:decodeStatus status="LayerTruncate" />
+				<else>
+					<log value="layer complete"/>
+					<core:decodeStatus status="NextLayerComplete" />
+				</else>
+			</if>
+			<else>
+				<core:decodeStatus status="LayerTruncate" />
+			</else>
+		</if>
+		<else>
+			<core:decodeStatus status="LayerTruncate" />
+		</else>
+	</if>
+</buffer>
+				]]>
+			</value>
+		</multiValueAttribute>
+	</property>
+	<recordField allItem="true" />
+</protocol>
+endsnippet
+
+snippet data "data decoder" b
+<protocol id="data" baseProtocol="ajp">
+	<recordField allItem="true">
+	</recordField>
+</protocol>
+endsnippet
+
+snippet dslrra "get dsl rra" b
+<core:getRRA var="rra" />
+<if test="${rra == 'req'}">
+<else>
+	<if test="${rra == 'resp'}">
+	</if>
+</else>
+</if>
+endsnippet
+
+snippet xmlerrdom "xml include error dom" b
+<attribute key="disableSearchDeclaration" value="true" type="Boolean"></attribute>
+<attribute key="includeErrorDom" value="true" type="Boolean"></attribute>
+<attribute key="acceptEncodingError" value="true" type="Boolean"></attribute>
+<attribute key="isNamespaceAware" value="false" type="Boolean"></attribute>
+<attribute key="enableFilterUnicode" value="true" type="Boolean"></attribute>
+endsnippet
+
+snippet dcdversion "dcd version nodes in register.xml" b
+<version>${1:2}</version>
+<changelogs>
+	<changelog version="$1">${2:message}</changelog>
+</changelogs>
+endsnippet
+
+snippet mva "multiValueAttribute" b
+<multiValueAttribute key="${1:key}" type="String" mismatchAction="accept" ignoreCase="false" >
+	<value hint="${2:hint}">${3:value}</value>
+</multiValueAttribute>
+endsnippet

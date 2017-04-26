@@ -23,7 +23,7 @@ cn.com.netis.dcd.parser.decoder.
 endsnippet
 
 snippet asciibuff "use AsciiBuffer to read String" i
-String ${1:vname} = AsciiBuffer.getString(${2:clearBuffer},${3:len});
+AsciiBuffer.getString(${2:clearBuffer},${3:len});
 endsnippet
 
 snippet record "record value" 
@@ -65,31 +65,21 @@ if (clearBuffer.remaining() > HEAD_LEN) {
 throw new BufferTruncatedException("buffer truncated.");
 endsnippet
 
-
-snippet logpkt "do output when in a packet" b
-if (getPacket().getPacketId() == ${1:pktid}) {
-	System.out.println(123);
-}
+snippet pktid "system output packet id" b
+System.out.println("${1: }packet" + getPacket().getPacketId());
 endsnippet
 
 snippet buffertruncated "Description" b
 throw new BufferTruncatedException(${1:message});
 endsnippet
 
-snippet bufferchecker "output buffer content in hex format" b
-int pp=clearBuffer.position();
+snippet peekpkt "peek packet" b
 if (getPacket().getPacketId() == ${1:pktid}) {
-	int consumed=clearBuffer.position()-pp;
-	if(consumed>0){
-		byte[] peek=new byte[consumed];
-		clearBuffer.position(pp);
-		clearBuffer.get(peek,0,consumed);
-		System.out.println(DatatypeConverter.printHexBinary(peek));
-	}
+}
 endsnippet
 
 snippet charsetbuff "get String use CharsetBuffer" i
-String ${1:field}=CharsetBuffer.getString(${2:clearBuffer}, ${3:len}, getPreferredCharset());
+CharsetBuffer.getString(${2:clearBuffer}, ${3:len}, getPreferredCharset());
 endsnippet
 
 snippet dcdlog "creat dcd sl4j LOG object" b
@@ -160,6 +150,21 @@ public final class ${1:name} extends ProtocolManager {
 endsnippet
 
 snippet Decoder "define a class of decoder" b
+
+import cn.com.netis.dcd.parser.decoder.AbstractDecoder;
+import cn.com.netis.dcd.parser.huygens.decode.AutoDetectResult;
+import cn.com.netis.dcd.parser.huygens.decode.DecodeFlag;
+import cn.com.netis.dcd.parser.huygens.decode.DecodeStatus;
+import cn.com.netis.dcd.parser.huygens.decode.DetectNextLayer;
+import cn.com.netis.dcd.parser.huygens.decode.ProtocolAttribute;
+import cn.com.netis.dcd.parser.huygens.field.DecodeField;
+import cn.com.netis.dcd.parser.util.buffer.AsciiBuffer;
+import cn.com.netis.dp.commons.common.RRAType;
+import cn.com.netis.dp.commons.common.decode.DecodeRecordFlag;
+import cn.com.netis.dp.commons.lang.BufferTruncatedException;
+import java.nio.BufferUnderflowException;
+import java.nio.ByteBuffer;
+
 public class ${1:DecoderName} extends AbstractDecoder {
 
 	@Override
@@ -185,9 +190,21 @@ public ByteBuffer getCompleteRebuildPayload(final boolean clearFlag) {
 }
 endsnippet
 
-snippet clearDecoder "override clearDecoder method of AbstractDecoder" b
-@Override
-public void cleanupDecoder() {
-	// do nothing
-}
+snippet peekbuffer "peek buffer content use AsciiBuffer utils" b
+int op = ${1:buffer}.position();
+System.out.println(AsciiBuffer.getString($1, ${2:$1.remaining()}));
+$1.position(op);
 endsnippet
+
+snippet xdlsuit "RegressoinSuit for xdl testcase" b
+/** The Constant suite. */
+private static final RegressionSuite suite = new BatchSuite(${1:testname}.class,
+			new String[]{"-m", "batch", "-i", "file", "-o", "btr", "-d",
+					CommonFolder.getRelativePath(
+							"classpath:cn/com/netis/dcd/parser/galilei/xdlsrc/bank/${2:bankname}") });
+endsnippet
+
+snippet sysokv "system output key and value" b
+System.out.println("${1:key} " + key + " ${2:value} " + value);
+endsnippet
+

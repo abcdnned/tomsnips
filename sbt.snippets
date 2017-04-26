@@ -1,0 +1,15 @@
+snippet res "define new resolver" b
+resolvers += ${1:Resolver.mavenLocal}
+endsnippet
+
+snippet dep "libraryDependencies" b
+libraryDependencies += "${1:groupId}" % "${2:artifactId}" % "${3:version}"
+endsnippet
+
+snippet asname "assembly jar name" b
+assemblyJarName in assembly := "${1:test.jar}"
+endsnippet
+
+snippet asmain "assembly main class" b
+mainClass in assembly := Some("${1:MainClass}"),
+endsnippet
