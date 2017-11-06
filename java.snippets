@@ -51,14 +51,19 @@ snippet arr2lis "convert array to list" b
 Arrays.asList(${1:array})
 endsnippet
 
-snippet getstacktrace "get stacktrace use apache utils" b
-ExceptionUtils.getStackTrace(${1:ecxception})
-endsnippet
-
 snippet syn "synchronized" b
 synchronized
 endsnippet
 
 snippet ov "override annotation" i
 @Override
+endsnippet
+
+snippet loopguard "Description" b
+resetInfiniteLoopCounter();
+isNotReachInfiniteLoopThreshold()
+endsnippet
+
+snippet sb "Description" b
+final StringBuilder sb = new StringBuilder();
 endsnippet

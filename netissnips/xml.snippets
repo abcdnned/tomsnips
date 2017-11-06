@@ -28,6 +28,16 @@ snippet split "split decoder" b
         <attribute key="separator" value="|"/>
         <attribute key="needKvSplitter" value="true"/>
         <attribute key="needConfiguration" value="true"/>
+		<multiValueAttribute key="reqFieldDef">
+			<value hint="reqFields">
+				DeviceID|MsgType|TranCode|ClientDate|ClientTime|ClientType|ClientTraceNum|ClientRevTraceNum
+			</value>
+		</multiValueAttribute>
+		<multiValueAttribute key="respFieldDef">
+			<value hint="respFields">
+				TspRespCode|TspRespDes|DeviceID|ClientDate|ClientTraceNum|TspDate
+			</value>
+		</multiValueAttribute>
     </property>
     <recordField allItem="true">
     </recordField>
@@ -165,6 +175,19 @@ snippet dslfld "field in dsl" b
 </field>
 endsnippet
 
+snippet dslunsign "Description" b
+<field name="${1:name}" cache="${2:true}" record="${3:false}">
+	<L>${4:1}</L>
+	<T>UNSIGNEDNUMBER</T>
+	<V>${5:BYTE}</V>
+</field>
+endsnippet
+
+snippet position "Description" b
+<buf:getPosition var="${1:p}" />
+<buf:setPosition value="${${2:p}}" />
+endsnippet
+
 snippet kvpair "kvpair" b
 <protocol id="keyvalue pair" baseProtocol="${1:base}">
 	<property>
@@ -275,7 +298,7 @@ snippet dslwraplen "dsl wrap length" b
 endsnippet
 
 snippet data "data decoder" b
-<protocol id="data" baseProtocol="ajp">
+<protocol id="data" baseProtocol="${1:base}">
 	<recordField allItem="true">
 	</recordField>
 </protocol>
@@ -310,4 +333,69 @@ snippet mva "multiValueAttribute" b
 <multiValueAttribute key="${1:key}" type="String" mismatchAction="accept" ignoreCase="false" >
 	<value hint="${2:hint}">${3:value}</value>
 </multiValueAttribute>
+endsnippet
+
+snippet http "Description" b
+<protocol id="http" baseProtocol="tcp">
+	<recordField allItem="true" />
+</protocol>
+endsnippet
+
+snippet proto "Description" b
+<protocol id="${1:proto}" baseProtocol="${2:tcp}">
+    <recordField allItem="true">
+    </recordField>
+</protocol>
+endsnippet
+
+snippet ssl "Description" b
+<protocol id="ssl" baseProtocol="tcp">
+	<property>
+		<attribute key="privateKey" value="$src/test/java/cn/com/netis/dcd/parser/regression/${1:pempath}" type="String" />
+	</property>
+	<recordField allItem="true" />
+</protocol>
+endsnippet
+
+snippet attr "Description" b
+<property>
+	<attribute key="${1:key}" value="${2:value}"/>
+</property>
+endsnippet
+
+snippet dsltlv "Description" b
+<while test="${_buffer.hasRemaining()}">
+    <field name="klen" cache="true" record="false">
+        <T>NUMBER</T>
+        <L>1</L>
+        <V>BYTE</V>
+    </field>
+    <field name="key" cache="true" record="false">
+        <L>${klen}</L>
+    </field>
+    <field name="vlen" cache="true" record="false">
+        <T>NUMBER</T>
+        <L>4</L>
+        <V>INTEGER</V>
+    </field>
+    <field name="${key}" cache="true" record="true">
+		<T encoding = "CHARSET">STRING</T>
+        <L>${vlen}</L>
+    </field>
+</while>
+endsnippet
+
+snippet dataencoding "Description" b
+<protocol id="data encoding" baseProtocol="${2:tcp}">
+	<property>
+	<attribute key="encoding" value="${1:base64}" type="String"/>
+	</property>
+</protocol>
+endsnippet
+
+snippet version "Description" b
+<version>${1:2}</version>
+<changelogs>
+	<changelog version="$1">${2:message}</changelog>
+</changelogs>
 endsnippet

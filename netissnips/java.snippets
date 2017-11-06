@@ -1,8 +1,8 @@
-snippet layerb "Description" b
+snippet flagBegin "Description" b
 decodeStatus.addDecodeFlag(DecodeFlag.LayerBegin);
 endsnippet
 
-snippet layert "Description" b
+snippet flagTruncate "Description" b
 decodeStatus.addDecodeFlag(DecodeFlag.LayerTruncate);
 endsnippet
 
@@ -23,7 +23,11 @@ cn.com.netis.dcd.parser.decoder.
 endsnippet
 
 snippet asciibuff "use AsciiBuffer to read String" i
-AsciiBuffer.getString(${2:clearBuffer},${3:len});
+AsciiBuffer.getString(${2:clearBuffer}, ${3:len});
+endsnippet
+
+snippet hexbuff "Description" i
+HexBuffer.getStringInByte(${1:buffer}, ${2:$1.remaining()});
 endsnippet
 
 snippet record "record value" 
@@ -45,7 +49,7 @@ for (DecodeField field : ${1:fields}) {
 endsnippet
 
 snippet defs "dcd define template" b
-{ { ${1:id} ,${2:null},${3:len},Encoding.${4:CHARSET}}, { "${5:TRANS_TYPE}", ValueType.STRING, true, "$5"} },
+{ { `!v matchstr(getline(line('.')-1), '\d\+') + 1` ,${2:null},${3:len},Encoding.${4:CHARSET}}, { "${5:TRANS_TYPE}", ValueType.STRING, false, "$5"} },
 endsnippet
 
 snippet dcdwraplen "wap length decoder tempalte" b
@@ -67,6 +71,10 @@ endsnippet
 
 snippet pktid "system output packet id" b
 System.out.println("${1: }packet" + getPacket().getPacketId());
+endsnippet
+
+snippet skippkt "Description" b
+if (getPacket().getPacketId() != ${1:1}) return false;
 endsnippet
 
 snippet buffertruncated "Description" b
@@ -162,6 +170,7 @@ import cn.com.netis.dcd.parser.util.buffer.AsciiBuffer;
 import cn.com.netis.dp.commons.common.RRAType;
 import cn.com.netis.dp.commons.common.decode.DecodeRecordFlag;
 import cn.com.netis.dp.commons.lang.BufferTruncatedException;
+import org.apache.commons.configuration.Configuration;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
@@ -191,9 +200,25 @@ public ByteBuffer getCompleteRebuildPayload(final boolean clearFlag) {
 endsnippet
 
 snippet peekbuffer "peek buffer content use AsciiBuffer utils" b
-int op = ${1:buffer}.position();
-System.out.println(AsciiBuffer.getString($1, ${2:$1.remaining()}));
-$1.position(op);
+final int op = ${1:buffer}.position();
+try {
+	System.out.println(AsciiBuffer.getString($1, ${2:$1.remaining()}));
+} finally {
+	$1.position(op);
+}
+endsnippet
+
+snippet peekfull "Description" b
+import cn.com.netis.dcd.parser.util.buffer.AsciiBuffer;
+import cn.com.netis.dcd.parser.util.buffer.HexBuffer;
+final int op = ${1:buffer}.position();
+try {
+	System.out.println(AsciiBuffer.getString($1, ${2:$1.remaining()}));
+	$1.position(op);
+	System.out.println(HexBuffer.getStringInByte($1, ${2:$1.remaining()}));
+} finally {
+	$1.position(op);
+}
 endsnippet
 
 snippet xdlsuit "RegressoinSuit for xdl testcase" b
@@ -208,3 +233,130 @@ snippet sysokv "system output key and value" b
 System.out.println("${1:key} " + key + " ${2:value} " + value);
 endsnippet
 
+snippet customtest "3.4 branch custom test case" b
+@Test
+public void test${1:Case}() throws IOException {
+	SUITE.play("${2:casename}", new String[] { "file.xml=$2.file.xml",
+			"btr.decode.xml=$2.btr.decode.xml" });
+}
+endsnippet
+
+snippet tmp "Description" b
+public static DecodeField[] get${1:Login}Fields() {
+    final DecodeField[] fields = {
+    };
+    return fields;
+}
+public static DecodeField[] get$1RespFields() {
+    final DecodeField[] fields = {
+    };
+    return fields;
+}
+endsnippet
+
+snippet Define "Description" b
+
+import cn.com.netis.dcd.parser.huygens.field.DecodeField;
+import cn.com.netis.dcd.parser.huygens.field.Encoding;
+import cn.com.netis.dcd.parser.huygens.field.bank.BankFieldFactory;
+import cn.com.netis.dp.commons.lang.ValueType;
+
+/**
+ * The Class ${1:name}.
+ *
+ * @version 1.0
+ */
+public class $1 {
+
+    private static final Object[][][] ${2:REQ}_DEF = {
+    };
+
+    private static final Object[][][] ${3:RESP}_DEF = {
+    };
+
+    /** The Constant $2_FIELDS. */
+    public static final DecodeField[] $2_FIELDS = new DecodeField[$2_DEF.length];
+
+    /** The Constant $3_FIELDS. */
+    public static final DecodeField[] $3_FIELDS = new DecodeField[$3_DEF.length];
+
+    static {
+        BankFieldFactory.buildFields($2_FIELDS, $2_DEF);
+        BankFieldFactory.buildFields($3_FIELDS, $3_DEF);
+    }
+}
+endsnippet
+
+snippet Attribute "Description" b
+import java.util.List;
+import org.apache.commons.configuration.Configuration;
+import cn.com.netis.dcd.parser.decoder.DefaultProtocolAttribute;
+
+
+final class ${1:Name}AttributeData extends DefaultProtocolAttribute
+        implements $1Attribute {
+
+    /**
+     * The enum Key.
+     */
+    enum Key {
+
+        ${2:attribute},
+    }
+
+    /**
+     * New instance.
+     *
+     * @param config the config
+     * @return the XML attribute data
+     */
+    public static $1AttributeData newInstance(final List<Configuration> config) {
+        final $1AttributeData result = newInstance(
+                new $1AttributeData(), config);
+        $2 = getBoolean(config, Key.$2, true);
+        return result;
+    }
+
+    @Override
+    public boolean is$2() {
+        return $2;
+    }
+
+    private static boolean $2;
+}
+endsnippet
+
+snippet GetAttribute "Description" b
+@Override
+public ProtocolAttribute buildProtocolAttribute(final List<Configuration> config) {
+	return $1AttributeData.newInstance(config);
+}
+endsnippet
+
+snippet getstacktrace "get stacktrace use apache utils" b
+import org.apache.commons.lang3.exception.ExceptionUtils;
+try{
+}catch (Throwable e) {
+System.out.println(ExceptionUtils.getStackTrace(e));
+}
+endsnippet
+
+snippet outputbytes "Description" b
+import cn.com.netis.dcd.parser.util.value.HexByteArray;
+System.out.println(HexByteArray.convertBytesToHexString(payload));
+endsnippet
+
+snippet hexbytearr "Description" b
+import cn.com.netis.dcd.parser.util.value.HexByteArray;
+System.out.println(HexByteArray.convertBytesToHexString(${1:bytes}));
+endsnippet
+
+snippet cache "Description" b
+import cn.com.netis.dp.commons.common.ValueRecord;
+final ValueRecord cacheValues = getRecordsManager().getCacheValues();
+endsnippet
+
+snippet setrra "Description" b
+getRecordsManager().safeSetRRAType(RRAType.req);
+getRecordsManager().safeSetRRAType(RRAType.resp);
+endsnippet
