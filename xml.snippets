@@ -1,0 +1,18 @@
+snippet maven.compiler "Description" b
+<plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-compiler-plugin</artifactId>
+    <version>3.7.0</version>
+	<configuration>
+		<encoding>${javac.encoding}</encoding>
+		<meminitial>128M</meminitial>
+		<maxmem>512M</maxmem>
+		<source>${javac.version}</source>
+		<target>${javac.version}</target>
+		<compilerVersion>${javac.version}</compilerVersion>
+		<fork>${javac.fork}</fork>
+		<debug>${javac.debug.mode}</debug>
+		<showDeprecation>${javac.deprecation.mode}</showDeprecation>
+	</configuration>
+</plugin>
+endsnippet

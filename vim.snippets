@@ -4,3 +4,138 @@ command! ${1:Command} :call s:${2:method}()
 function! s:$2()
 endfunction
 endsnippet
+
+snippet forin "Description" b
+for s:item in [1, 2, 3]
+	echo s:item
+endfor
+endsnippet
+
+snippet while "Description" b
+let c = 1
+let total = 0
+
+while c <= 4
+  let total += c
+  let c += 1
+endwhile
+
+echom total
+endsnippet
+
+snippet if "Description" b
+if "foo" == "bar"
+    echom "one"
+elseif "foo" == "foo"
+    echom "two"
+endif
+endsnippet
+
+snippet execmd_with_variable "Description" b
+exe '%s/'.s:str.'/fff/'
+endsnippet
+
+snippet concatstr "Description" b
+'hello'.'world'
+endsnippet
+
+snippet matchstr "Description" b
+let s:str = matchstr(s:l, '"\w\+"')
+endsnippet
+
+snippet substitute "Description" b
+let s:new_var = substitute(s:item, '^\W*\(.\{-}\)\W*$', '\1', '')
+endsnippet
+
+snippet comments "Description" b
+"
+block comments
+s/^/"/
+endsnippet
+
+snippet curline "Description" b
+line('.')
+endsnippet
+
+snippet lastline "Description" b
+line('$')
+endsnippet
+
+snippet replaceline "Description" b
+function DeAmperfy()
+    let curr_line   = getline('.')
+    let replacement = substitute(curr_line,'&\(\w\+;\)\@!','&','g')
+    call setline('.', replacement)
+endfunction
+endsnippet
+
+snippet variable "Description" b
+let is used to set a variable.
+
+unlet is used to unset a variable.
+
+unlet! unsets a variable and surpresses the error if it doesn’t exist.
+
+By default, a variable is scoped globally if it is initially defined outside a function or it is local to the function it was initialized in in. You can explicitly scope variables by prepending a specific prefix to their name:
+
+g:var - global.
+a:var - function argument.
+l:var - local to function.
+b:var - local to buffer.
+w:var - local to window.
+t:var - local to tab.
+v:var - Predefined by Vim.
+You can set and get environment variables by referencing the variable as $variable. Built-in vim options are also available by referencing the variable as &option.
+endsnippet
+
+snippet rangefunction "Description" b
+command! -range ExtractString <line1>,<line2>call s:method()
+
+function! s:method() range
+    for line_number in range(a:firstline, a:lastline)
+        let s:l = getline(line_number)
+    endfor
+endfunction
+endsnippet
+
+snippet function "Description" b
+command! -nargs=* ${1:func} :call s:${2:method}(<f-args>)
+
+function! s:$2(...)
+endfunction 
+endsnippet
+
+snippet trim "Description" b
+let s:new_var = substitute(s:item, '^\s*\(.\{-}\)\s*$', '\1', '')
+endsnippet
+
+snippet printf "Description" b
+printf("    %s %s = new %s();", s:str, s:var, s:str)
+Often used items are:
+  %s	string
+  %6S	string right-aligned in 6 display cells
+  %6s	string right-aligned in 6 bytes
+  %.9s	string truncated to 9 bytes
+  %c	single byte
+  %d	decimal number
+  %5d	decimal number padded with spaces to 5 characters
+  %x	hex number
+  %04x	hex number padded with zeros to at least 4 characters
+  %X	hex number using upper case letters
+  %o	octal number
+  %f	floating point number in the form 123.456
+  %e	floating point number in the form 1.234e3
+  %E	floating point number in the form 1.234E3
+  %g	floating point number, as %f or %e depending on value
+  %G	floating point number, as %f or %E depending on value
+  %%	the % character itself
+endsnippet
+
+snippet arrayindex "Description" b
+a[0] a[1:2] a[1:] a[:-1] str[3]
+endsnippet
+
+snippet simulate_normal_command "Description" b
+"simulate indent current line
+normal =k
+endsnippet

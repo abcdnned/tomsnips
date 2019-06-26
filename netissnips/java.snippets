@@ -49,7 +49,7 @@ for (DecodeField field : ${1:fields}) {
 endsnippet
 
 snippet defs "dcd define template" b
-{ { `!v matchstr(getline(line('.')-1), '\d\+') + 1` ,${2:null},${3:len},Encoding.${4:CHARSET}}, { "${5:TRANS_TYPE}", ValueType.STRING, false, "$5"} },
+{ { `!v matchstr(getline(line('.')-1), '\d\+') + 1` , null, ${3:len},Encoding.CHARSET}, { "${5:TRANS_TYPE}", ValueType.STRING, false, "$5"} },
 endsnippet
 
 snippet dcdwraplen "wap length decoder tempalte" b
@@ -91,6 +91,8 @@ CharsetBuffer.getString(${2:clearBuffer}, ${3:len}, getPreferredCharset());
 endsnippet
 
 snippet dcdlog "creat dcd sl4j LOG object" b
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /** The Constant LOG. */
 private static final Logger LOG = LoggerFactory.getLogger(${1:Class}.class);
 endsnippet
@@ -200,6 +202,7 @@ public ByteBuffer getCompleteRebuildPayload(final boolean clearFlag) {
 endsnippet
 
 snippet peekbuffer "peek buffer content use AsciiBuffer utils" b
+System.out.println("peek packet " + getPacket().getPacketId());
 final int op = ${1:buffer}.position();
 try {
 	System.out.println(AsciiBuffer.getString($1, ${2:$1.remaining()}));
@@ -288,6 +291,31 @@ public class $1 {
 endsnippet
 
 snippet Attribute "Description" b
+import cn.com.netis.dcd.parser.huygens.decode.ProtocolAttribute;
+
+/**
+ * The Interface $1Attribute.
+ *
+ * @version 1.0
+ * @since project 2.0
+ */
+interface ${1:name}Attribute extends ProtocolAttribute {
+
+    /** The DEFAUT_AUTO_CONSUME. */
+    boolean DEFAUT_AUTO_CONSUME = true;
+
+    /**
+     * Method isAutoConsume.
+     *
+     * @return the boolean
+     */
+    boolean isAutoConsume();
+
+}
+
+endsnippet
+
+snippet AttributeDate "Description" b
 import java.util.List;
 import org.apache.commons.configuration.Configuration;
 import cn.com.netis.dcd.parser.decoder.DefaultProtocolAttribute;
@@ -313,7 +341,7 @@ final class ${1:Name}AttributeData extends DefaultProtocolAttribute
     public static $1AttributeData newInstance(final List<Configuration> config) {
         final $1AttributeData result = newInstance(
                 new $1AttributeData(), config);
-        $2 = getBoolean(config, Key.$2, true);
+        result.$2 = getBoolean(config, Key.$2, true);
         return result;
     }
 
@@ -322,7 +350,7 @@ final class ${1:Name}AttributeData extends DefaultProtocolAttribute
         return $2;
     }
 
-    private static boolean $2;
+    private boolean $2;
 }
 endsnippet
 
@@ -359,4 +387,62 @@ endsnippet
 snippet setrra "Description" b
 getRecordsManager().safeSetRRAType(RRAType.req);
 getRecordsManager().safeSetRRAType(RRAType.resp);
+endsnippet
+
+snippet newrecord "Description" b
+getRecordsManager().getDecodeRecord().pushSnapshot();
+//decode loop start
+getRecordsManager().getDecodeRecord().setNeedExport(true);
+getRecordsManager().newRecord();
+endsnippet
+
+snippet asnextlayer "Description" b
+
+import cn.com.netis.dp.commons.common.decode.DecodeRecordFlag;
+
+protected EnumSet<DecodeRecordFlag> flags = EnumSet.noneOf(DecodeRecordFlag.class);
+
+protected ByteBuffer rebuildBuffer;
+
+@Override
+public void cleanupDecoder() {
+	flags = EnumSet.noneOf(DecodeRecordFlag.class);
+}
+
+protected void recordValue(final Pair<String, byte[]> recordValuePair,
+		final DecodeStatus decodeStatus) {
+	if (recordValuePair == null) {
+		return;
+	}
+	final String key = recordValuePair.getKey();
+	if (StringUtils.isEmpty(key)) {
+		return;
+	}
+	getRecordsManager().recordValue(key, recordValuePair.getValue(), getPreferredCharset(),
+			flags);
+	if (flags.contains(DecodeRecordFlag.asNextLayer)) {
+		rebuildBuffer = ByteBuffer.wrap(recordValuePair.getValue());
+		decodeStatus.addDecodeFlag(DecodeFlag.NextLayerComplete);
+	}
+}
+
+@Override
+public ByteBuffer getCompleteRebuildPayload(final boolean clearFlag) {
+	final ByteBuffer result = rebuildBuffer;
+	if (clearFlag) {
+		rebuildBuffer = null;
+	}
+	return result;
+}
+
+endsnippet
+
+snippet readtill "Description" b
+resetInfiniteLoopCounter();
+int p = buffer.position();
+while(isNotReachInfiniteLoopThreshold() && p < buffer.limit()) {
+	if (buffer.get(p) == (byte)0x20) {
+		return AsciiBuffer.getString(buffer, p - buffer.position());
+	}
+}
 endsnippet

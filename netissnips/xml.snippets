@@ -77,6 +77,10 @@ snippet iso "base iso decoder" b
 </protocol>
 endsnippet
 
+snippet isodefs "Description" b
+<value hint="`!v matchstr(getline(line('.')-1), '\d\+') + 1`">${2:fix};${3:len};ascii;string;${4:name}</value>
+endsnippet
+
 snippet field "rename field" b
 <field item="${2:oldName}">${1:newName}</field>
 endsnippet
@@ -136,6 +140,48 @@ snippet regex "regex decoder" b
 </protocol>
 endsnippet
 
+snippet regex2 "Description" b
+<protocol id="regex" baseProtocol="http">
+    <property>
+        <attribute key="maxSearchCount" value="1" type="Integer"/>
+        <attribute key="unsetLayerBeginFlag" value="false" type="boolean"/>
+        <multiValueAttribute key="requestPattern" type="String" ignoreCase="false">
+            <value hint="name=*|flag=CASE_INSENSITIVE:COMMENTS">
+                <![CDATA[
+                .*?=(?!\{)(?<F1>[a-zA-Z0-9_-\s\\:.]*)
+                .*?=(?!\{)(?<F2>[a-zA-Z0-9_-\s\\:.]*)
+                .*?=(?!\{)(?<F3>[a-zA-Z0-9_-\s\\:.]*)
+                .*?=(?!\{)(?<F4>[a-zA-Z0-9_-\s\\:.]*)
+                .*?=(?!\{)(?<F5>[a-zA-Z0-9_-\s\\:.]*)
+                .*?=(?!\{)(?<F6>[a-zA-Z0-9_-\s\\:.]*)
+                .*?=(?!\{)(?<F7>[a-zA-Z0-9_-\s\\:.]*)
+                .*?=(?!\{)(?<F8>[a-zA-Z0-9_-\s\\:.]*)
+                .*?=(?!\{)(?<F9>[a-zA-Z0-9_-\s\\:.]*)
+                .*?=(?!\{)(?<F10>[a-zA-Z0-9_-\s\\:.]*)
+                ]]>
+            </value>
+        </multiValueAttribute>
+        <multiValueAttribute key="responsePattern" type="String" ignoreCase="false">
+            <value hint="name=*|flag=CASE_INSENSITIVE:COMMENTS">
+                <![CDATA[
+                .*?=(?!\{)(?<F1>[a-zA-Z0-9_-\s\\:.]*)
+                .*?=(?!\{)(?<F2>[a-zA-Z0-9_-\s\\:.]*)
+                .*?=(?!\{)(?<F3>[a-zA-Z0-9_-\s\\:.]*)
+                .*?=(?!\{)(?<F4>[a-zA-Z0-9_-\s\\:.]*)
+                .*?=(?!\{)(?<F5>[a-zA-Z0-9_-\s\\:.]*)
+                .*?=(?!\{)(?<F6>[a-zA-Z0-9_-\s\\:.]*)
+                .*?=(?!\{)(?<F7>[a-zA-Z0-9_-\s\\:.]*)
+                .*?=(?!\{)(?<F8>[a-zA-Z0-9_-\s\\:.]*)
+                .*?=(?!\{)(?<F9>[a-zA-Z0-9_-\s\\:.]*)
+                .*?=(?!\{)(?<F10>[a-zA-Z0-9_-\s\\:.]*)
+                ]]>
+            </value>
+        </multiValueAttribute>
+    </property>
+    <recordField allItem="true"/>
+</protocol>
+endsnippet
+
 snippet searchpattern "search pattern decoder" b
 <protocol id="search pattern" baseProtocol="${1:base}">
 	<property>
@@ -170,9 +216,18 @@ snippet searchxml "search xml decoder" b
 endsnippet
 
 snippet dslfld "field in dsl" b
-<field name="${2:fldname}" cache="${3:true}" record="${4:true}">
+<field name="${2:fldname}" cache="${3:false}" record="${4:true}">
 	<L>${1:len}</L>
 </field>
+endsnippet
+
+snippet dslrecord "Description" b
+<core:record key="${1:keyname}" value="${${2:value}}" />
+endsnippet
+
+snippet dslflowcache "Description" b
+<core:setSameSideFlowValues key="${1:key}" value="${2:value}" /> 
+<core:getSameSideFlowValues key="${1:key}" var="${2:var}"/>
 endsnippet
 
 snippet dslunsign "Description" b
@@ -181,11 +236,6 @@ snippet dslunsign "Description" b
 	<T>UNSIGNEDNUMBER</T>
 	<V>${5:BYTE}</V>
 </field>
-endsnippet
-
-snippet position "Description" b
-<buf:getPosition var="${1:p}" />
-<buf:setPosition value="${${2:p}}" />
 endsnippet
 
 snippet kvpair "kvpair" b
@@ -322,6 +372,14 @@ snippet xmlerrdom "xml include error dom" b
 <attribute key="enableFilterUnicode" value="true" type="Boolean"></attribute>
 endsnippet
 
+snippet xmlloop "Description" b
+<attribute key="loopXml" value="true" type="Boolean"></attribute>
+<attribute key="loopExportSeparately" value="false" type="Boolean"></attribute>
+<attribute key="loopConsume" value="true" type="Boolean"></attribute>
+<attribute key="loopThreshold" value="10"></attribute>
+<attribute key="loopSpan" value="0" ></attribute>
+endsnippet
+
 snippet dcdversion "dcd version nodes in register.xml" b
 <version>${1:2}</version>
 <changelogs>
@@ -339,6 +397,16 @@ snippet http "Description" b
 <protocol id="http" baseProtocol="tcp">
 	<recordField allItem="true" />
 </protocol>
+endsnippet
+
+snippet httpcontenttype "Description" b
+<property>
+	<multiValueAttribute key="contentType" type="String" mismatchAction="accept" ignoreCase="false" >
+		<value hint="split">text/plain</value>
+		<value hint="search xml">text/html</value>
+		<value hint="dummy">text/javascript</value>
+	</multiValueAttribute>
+</property>
 endsnippet
 
 snippet proto "Description" b
@@ -398,4 +466,180 @@ snippet version "Description" b
 <changelogs>
 	<changelog version="$1">${2:message}</changelog>
 </changelogs>
+endsnippet
+
+snippet jolt "Description" b
+<protocol id="jolt" baseProtocol="tcp">
+	<recordField allItem="true">
+	</recordField>
+</protocol>
+endsnippet
+
+snippet cdataxml "Description" 
+<protocol id="cdata xml" baseProtocol="${2:base}">
+    <property>
+		<attribute key="disableSearchDeclaration" value="true" type="Boolean" />
+    </property>
+    <recordField allItem="true" template="xpath">
+		<field item="${1:/Envelope/Body/*/return}" exclude="true" cdata="true"></field>
+    </recordField>
+</protocol>
+<protocol id="xml" baseProtocol="cdata xml">
+    <recordField allItem="true" template="xpath">
+    </recordField>
+</protocol>
+endsnippet
+
+snippet keyvaluexml "Description" b
+<protocol id="keyvalue xml" baseProtocol="http">
+    <recordField template="kvxpath" allItem="false">
+        <field item="/decode/group/record/item/@target">=/decode/group/record/item/@name</field>
+    </recordField>
+</protocol>
+endsnippet
+
+snippet searchxml "Description" b
+<protocol id="search xml" baseProtocol="http">
+	<property>
+		<attribute key="startSearchSize" value="4000" type="Integer" />
+		<attribute key="endSearchSize" value="6000" type="Integer" />
+		<attribute key="disableCheckDeclaration" value="true" type="Boolean" />
+		<multiValueAttribute key="rootNode">
+			<value>${1:html}</value>
+		 </multiValueAttribute>
+	</property>
+	<recordField allItem="true" template="xpath" />
+</protocol>
+endsnippet
+
+snippet nexus "Description" b
+<server>
+  <id>${1:name}</id>
+  <username>tom.yang</username>
+  <password>yzj_184</password>
+</server>
+endsnippet
+
+snippet bypassbuffer "Description" b
+<protocol id="bypass buffer" baseProtocol="tcp">
+	<property>
+		<multiValueAttribute key="bypass" type="String"
+			mismatchAction="accept" ignoreCase="false">
+			<value hint="http">packet:Port=57552</value>
+			<value hint="wrap length">packet:Port=64731</value>
+		</multiValueAttribute>
+	</property>
+	<recordField allItem="false" />
+</protocol>
+endsnippet
+
+snippet bypassrra "Description" b
+<protocol id="bypass rra" baseProtocol="tcp">
+	<property>
+		<multiValueAttribute key="bypass" type="String" ignoreCase="false" >
+			<value hint="${1:resp}">resp</value>
+			<value hint="${2:req}">req</value>
+		</multiValueAttribute>
+	</property>
+	<recordField allItem="true" />
+</protocol>
+endsnippet
+
+snippet dslbufpos "Description" b
+<buf:getPosition var="markPos" />
+<buf:setPosition value="${markPos}" />
+endsnippet
+snippet dsllimit "Description" b
+<buf:getLimit var="markPos" />
+<buf:setLimit value="${markPos}" />
+endsnippet
+snippet dslhex "Description" b
+<field name="${2:name}" cache="false" record="true">
+	<L>${1:len}</L>
+	<T radix="HEX">STRING</T>
+	<V>STRING</V>
+</field>
+endsnippet
+
+snippet wmq "Description" b
+<protocol id="wmq" baseProtocol="tcp">
+    <recordField allItem="true">
+    </recordField>
+</protocol>
+endsnippet
+
+snippet asnextlayer "Description" b
+<field item="${1:KeyName}" asNextLayer="true" exclude="true"></field>
+endsnippet
+snippet searchjson "Description" b
+<protocol id="search json" baseProtocol="${1:wrap length}">
+	<property>
+		<attribute key="startSearchSize" value="100"/>
+		<attribute key="endSearchSize" value="100"/>
+	</property>
+	<recordField allItem="true">
+	</recordField>
+</protocol>
+<protocol id="json" baseProtocol="search json">
+	<property>
+		<attribute key="charset" value="gb2312" />
+	</property>
+	<recordField allItem="true" template="json">
+	</recordField>
+</protocol>
+endsnippet
+
+snippet pducache "Description" b
+<?xml version="1.0" encoding="UTF-8"  ?>
+
+<decode version="2.0">
+	<property>
+		<recordCode>
+			<field>SrcIp</field>
+			<field>DestIp</field>
+			<field>SrcPort</field>
+			<field>DestPort</field>
+			<field>FlowId</field>
+			<field>PktId</field>
+			<field>RRA</field>
+			<field>PldLen</field>
+		</recordCode>
+		<mismatchDropPacketEnable>true</mismatchDropPacketEnable>
+		<pduBufferSize>102400</pduBufferSize>
+        <!-- Control the PDU in cached packet count. Set this-value = O to disable
+            this feature. Default is 100. -->
+        <pduCachePacketCount>2000</pduCachePacketCount>
+	</property>
+
+	<group decodeId="1">
+	    <property>
+			<payloadCompleteRequired>true</payloadCompleteRequired>
+		</property>
+<protocol id="http" baseProtocol="tcp">
+<property>
+		   	<attribute key="forceCompleteBufferSize" value="2000" type="Integer" /> 
+			</property>
+			<recordField allItem="false">
+			</recordField>
+		</protocol>
+		<protocol id="xml" baseProtocol="http">
+			<layerProperty>
+				<encoding>url</encoding>
+				<payloadOffset>7,0</payloadOffset>
+			</layerProperty>
+			<recordField allItem="false" template="xpath">
+				<field item="/*/@@">RootTag</field>	
+				<field item="/Request/Header/SenarioCode">TransType</field>	
+				<field item="/Request/Header/RequestID">RequestID</field>	
+				<field item="/Request/Header/Security/Channel">TransChannel</field>	
+			<!--
+				<field item="/Response/Header/SenarioCode">TransType_Resp</field>	
+			-->
+				<field item="/Response/Header/ServiceJounalSequence">ServiceJounalSequence</field>	
+				<field item="/Response/ResponseStatus/ReturnCode">ReturnCode</field>	
+				<field item="/Response/ResponseStatus/ResponseFlag">ResponseFlag</field>	
+			</recordField>
+		</protocol>
+	</group>
+</decode>
 endsnippet

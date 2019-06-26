@@ -67,3 +67,114 @@ endsnippet
 snippet sb "Description" b
 final StringBuilder sb = new StringBuilder();
 endsnippet
+
+snippet inttobytes "Description" b
+byte[] bytes = ByteBuffer.allocate(4).putInt(${1:value}).array();
+endsnippet
+
+snippet readline_using_inputstream "Description" b
+BufferedReader reader = new BufferedReader(new InputStreamReader(${1:inputStream}));
+endsnippet
+
+snippet readfileall "Description" b
+File file = new File("${1:path}");
+byte[] data = new byte[file.length];
+try (FileInputStream in = new FileInputStream() {
+	in.read(data);
+	in.close();
+}
+endsnippet
+
+snippet getresource "Description" b
+${1:class}.class.getClassLoader().getResourceAsStream("${2:path}")
+endsnippet
+
+snippet arrytostr "Description" b
+Arrays.toString(${1:v})
+endsnippet
+
+snippet hex2bytes "Description" b
+import org.apache.commons.codec.binary.Hex;
+Hex.decodeHex(${1:str}.toCharArray())
+endsnippet
+
+snippet writebytesstream "Description" b
+try (FileOutputStream fos = new FileOutputStream("${1:path}")) {
+   fos.write(myByteArray);
+}
+endsnippet
+
+snippet printwriter "Description" b
+try (PrintWriter out = new PrintWriter("${1:path}")) {
+    out.println(text);
+}
+endsnippet
+
+snippet filewriter "Description" b
+BufferedWriter writer = null;
+try
+{
+    writer = new BufferedWriter(new FileWriter(${1:yourfilename}));
+    writer.write(${2:yourstring});
+
+}
+catch ( IOException e)
+{
+}
+finally
+{
+    try
+    {
+        if (writer != null)
+        writer.close( );
+    }
+    catch (IOException e)
+    {
+    }
+}
+endsnippet
+
+snippet wraplen "Description" i
+final byte[] wrapLength = ByteBuffer.allocate(4).putInt(data.length).array();
+final byte[] result = new byte[data.length + wrapLength.length];
+System.arraycopy(wrapLength, 0, result, 0, wrapLength.length);
+System.arraycopy(data, 0, result, wrapLength.length, data.length);
+endsnippet
+
+snippet datainputstream "Description" b
+DataInputStream dis = new DataInputStream(new FileInputStream(inFile));
+while (dis.available() > 0) {
+    // read and use data
+}
+DataInputStream dis = new DataInputStream(new FileInputStream(inFile));
+boolean eof = false;
+while (!eof) {
+    try {
+        // read and use data
+    } catch (EOFException e) {
+        eof = true;
+    }
+}
+endsnippet
+
+snippet fileoutputstream "Description" b
+try (FileOutputStream fop = new FileOutputStream(new File("/home/tom/tmp/data"))) {
+	fop.write(data);
+	fop.flush();
+} catch (Exception e) {
+	System.out.println(e.getMessage());
+}
+endsnippet
+
+snippet UnsignValue "Description" b
+public final class UnsignedValue {
+
+    /** Mask for unsigned integer. */
+    public static final long UINT_MASK = 0xFFFFFFFFL;
+
+    public static long toUint(final int value) {
+        return value & UINT_MASK;
+    }
+
+}
+endsnippet
